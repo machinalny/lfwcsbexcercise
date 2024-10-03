@@ -2,13 +2,34 @@
 package com.machinalny.lfwcsb;
 
 import com.machinalny.lfwcsb.exceptions.TeamNameException;
+import com.machinalny.lfwcsb.model.Match;
+import com.machinalny.lfwcsb.storage.MatchScoreBoardStorage;
+import java.util.List;
 import java.util.Objects;
 
 public class LifeFootballWorldCupScoreBoard {
 
-  public static void startMatch(String homeTeam, String awayTeam) {
+  private MatchScoreBoardStorage matchScoreBoardStorage;
+
+  public LifeFootballWorldCupScoreBoard(MatchScoreBoardStorage matchScoreBoardStorage) {
+    this.matchScoreBoardStorage = matchScoreBoardStorage;
+  }
+
+  public void startMatch(String homeTeam, String awayTeam) {
     if (Objects.equals(homeTeam, awayTeam)) {
       throw new TeamNameException("One team cannot play with itself on World Cup");
     }
+    Match newMatch = new Match(homeTeam, awayTeam, 0, 0);
+    this.matchScoreBoardStorage.addMatch(newMatch);
+  }
+
+  public String getSummaryOfMatchesInProgress() {
+    List<Match> activeMatches = this.matchScoreBoardStorage.getActiveMatches();
+    StringBuilder stringBuilder = new StringBuilder();
+    for (int i = 0; i < activeMatches.size(); i++) {
+      Match match = activeMatches.get(i);
+      stringBuilder.append(String.format("%d.%s", i + 1, match.toString()));
+    }
+    return stringBuilder.toString();
   }
 }
