@@ -47,9 +47,11 @@ public class LifeFootballWorldCupScoreBoard {
   }
 
   public void updateScore(String homeTeam, String awayTeam, int homeScore, int awayScore) {
-    Match match = this.matchScoreBoardStorage.getMatch(homeTeam, awayTeam);
+    String sanitizedHomeTeam = sanitizeTeamName(homeTeam);
+    String sanitizedAwayTeam = sanitizeTeamName(awayTeam);
+    Match match = this.matchScoreBoardStorage.getMatch(sanitizedHomeTeam, sanitizedAwayTeam);
     if (match == null) {
-      throw new NotStartedMatchException("Can't update score of not updated match");
+      throw new NotStartedMatchException("Can't update score of not started match");
     }
     if (homeScore < match.homeScore()
         || awayScore < match.awayScore()
@@ -57,7 +59,7 @@ public class LifeFootballWorldCupScoreBoard {
         || awayScore < 0) {
       throw new ScoreCantBeDeductedOrNegative("Score can't be deducted or negative");
     }
-    Match updatedMatch = new Match(homeTeam, awayTeam, homeScore, awayScore);
+    Match updatedMatch = new Match(sanitizedHomeTeam, sanitizedAwayTeam, homeScore, awayScore);
     this.matchScoreBoardStorage.upsertMatch(updatedMatch);
   }
 
