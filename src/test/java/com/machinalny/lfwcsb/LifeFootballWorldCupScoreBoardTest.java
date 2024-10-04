@@ -118,10 +118,12 @@ class LifeFootballWorldCupScoreBoardTest {
 
   @ParameterizedTest
   @MethodSource("provideTeamNamesIdentifiedAsTheSameTeam")
-  void validTeamNamesShouldIdentifyAsExistingTeamForUpdate(String originalName, String alternativeName) {
+  void validTeamNamesShouldIdentifyAsExistingTeamForUpdate(
+      String originalName, String alternativeName) {
     scoreBoard.startMatch(originalName, "Panama");
     scoreBoard.updateScore(alternativeName, "Panama", 2, 0);
-    var expectedSummary = String.format("""
+    var expectedSummary =
+        String.format("""
                 1.%s 2 - Panama 0
                 """, originalName);
     assertEquals(expectedSummary.strip(), scoreBoard.getSummaryOfMatchesInProgress().strip());
