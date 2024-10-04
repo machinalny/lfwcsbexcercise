@@ -6,7 +6,11 @@ import java.util.List;
 
 public interface MatchScoreBoardStorage {
 
-  void addMatch(Match match);
+  void initialize();
+
+  void upsertMatch(Match match);
+
+  Match getMatch(String homeTeam, String awayTeam);
 
   List<Match> getActiveMatches();
 
