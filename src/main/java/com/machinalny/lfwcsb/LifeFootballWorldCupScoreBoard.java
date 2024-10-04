@@ -2,6 +2,7 @@
 package com.machinalny.lfwcsb;
 
 import com.machinalny.lfwcsb.exceptions.NotStartedMatchException;
+import com.machinalny.lfwcsb.exceptions.ScoreCantBeDeductedOrNegative;
 import com.machinalny.lfwcsb.exceptions.TeamNameException;
 import com.machinalny.lfwcsb.model.Match;
 import com.machinalny.lfwcsb.storage.MatchScoreBoardStorage;
@@ -29,6 +30,12 @@ public class LifeFootballWorldCupScoreBoard {
     Match match = this.matchScoreBoardStorage.getMatch(homeTeam, awayTeam);
     if (match == null) {
       throw new NotStartedMatchException("Can't update score of not updated match");
+    }
+    if (homeScore < match.homeScore()
+        || awayScore < match.awayScore()
+        || homeScore < 0
+        || awayScore < 0) {
+      throw new ScoreCantBeDeductedOrNegative("Score can't be deducted or negative");
     }
     Match updatedMatch = new Match(homeTeam, awayTeam, homeScore, awayScore);
     this.matchScoreBoardStorage.upsertMatch(updatedMatch);
