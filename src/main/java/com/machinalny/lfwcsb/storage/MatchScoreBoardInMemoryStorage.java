@@ -48,5 +48,8 @@ public class MatchScoreBoardInMemoryStorage implements MatchScoreBoardStorage {
   }
 
   @Override
-  public void removeMatch(Match match) {}
+  public void removeMatch(Match match) {
+    Integer hashOfMatch = calculateHashOfMatch(match);
+    activeMatches.remove(hashOfMatch);
+  }
 }

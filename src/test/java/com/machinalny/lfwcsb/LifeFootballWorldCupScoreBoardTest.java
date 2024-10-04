@@ -1,8 +1,7 @@
 /* Lukasz Lopusinski (machinalny) ©2024  */
 package com.machinalny.lfwcsb;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.machinalny.lfwcsb.exceptions.NotStartedMatchException;
 import com.machinalny.lfwcsb.exceptions.ScoreCantBeDeductedOrNegative;
@@ -127,5 +126,13 @@ class LifeFootballWorldCupScoreBoardTest {
                 1.%s 2 - Panama 0
                 """, originalName);
     assertEquals(expectedSummary.strip(), scoreBoard.getSummaryOfMatchesInProgress().strip());
+  }
+
+  @Test
+  void finishingMatchShouldRemoveItFromScoreBoard() {
+    scoreBoard.startMatch("Uruguay", "Panama");
+    var scoreBoardBeforeFinishing = scoreBoard.getSummaryOfMatchesInProgress().strip();
+    scoreBoard.finishMatch("Uruguay", "Panama");
+    assertNotEquals(scoreBoardBeforeFinishing, scoreBoard.getSummaryOfMatchesInProgress().strip());
   }
 }

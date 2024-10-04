@@ -72,4 +72,10 @@ public class LifeFootballWorldCupScoreBoard {
     }
     return stringBuilder.toString();
   }
+
+  public void finishMatch(String homeTeam, String awayTeam) {
+    String sanitizedHomeTeam = sanitizeTeamName(homeTeam);
+    String sanitizedAwayTeam = sanitizeTeamName(awayTeam);
+    this.matchScoreBoardStorage.removeMatch(new Match(sanitizedHomeTeam, sanitizedAwayTeam, 0, 0));
+  }
 }
