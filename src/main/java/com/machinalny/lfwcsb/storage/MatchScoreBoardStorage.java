@@ -12,6 +12,8 @@ public interface MatchScoreBoardStorage {
 
   Match getMatch(String homeTeam, String awayTeam);
 
+  Match getMatchByTeam(String teamName);
+
   List<Match> getActiveMatches();
 
   void removeMatch(Match match);

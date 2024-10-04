@@ -35,10 +35,21 @@ public class MatchScoreBoardInMemoryStorage implements MatchScoreBoardStorage {
   }
 
   @Override
+  public Match getMatchByTeam(String teamName) {
+    return this.activeMatches.values().stream()
+        .filter(match -> match.homeTeam().equals(teamName) || match.awayTeam().equals(teamName))
+        .findFirst()
+        .orElse(null);
+  }
+
+  @Override
   public List<Match> getActiveMatches() {
     return activeMatches.values().stream().toList();
   }
 
   @Override
-  public void removeMatch(Match match) {}
+  public void removeMatch(Match match) {
+    Integer hashOfMatch = calculateHashOfMatch(match);
+    activeMatches.remove(hashOfMatch);
+  }
 }
