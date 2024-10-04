@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.machinalny.lfwcsb.exceptions.NotStartedMatchException;
 import com.machinalny.lfwcsb.exceptions.ScoreCantBeDeductedOrNegative;
+import com.machinalny.lfwcsb.exceptions.TeamCantPlayTwoMatchesAtTheSameTimeException;
 import com.machinalny.lfwcsb.exceptions.TeamNameException;
 import com.machinalny.lfwcsb.storage.MatchScoreBoardInMemoryStorage;
 import java.util.stream.Stream;
@@ -81,5 +82,11 @@ class LifeFootballWorldCupScoreBoardTest {
     assertThrows(
         ScoreCantBeDeductedOrNegative.class,
         () -> scoreBoard.updateScore("Uruguay", "Panama", homeScore, awayScore));
+  }
+
+  @Test
+  void teamShouldOnlyBeAllowedToPlayOneMatchAtATime(){
+    scoreBoard.startMatch("Uruguay", "Panama");
+    assertThrows(TeamCantPlayTwoMatchesAtTheSameTimeException.class, () -> scoreBoard.startMatch("Uruguay", "Panama"));
   }
 }

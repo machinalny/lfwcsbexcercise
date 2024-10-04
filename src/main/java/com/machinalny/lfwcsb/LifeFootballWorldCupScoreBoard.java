@@ -3,6 +3,7 @@ package com.machinalny.lfwcsb;
 
 import com.machinalny.lfwcsb.exceptions.NotStartedMatchException;
 import com.machinalny.lfwcsb.exceptions.ScoreCantBeDeductedOrNegative;
+import com.machinalny.lfwcsb.exceptions.TeamCantPlayTwoMatchesAtTheSameTimeException;
 import com.machinalny.lfwcsb.exceptions.TeamNameException;
 import com.machinalny.lfwcsb.model.Match;
 import com.machinalny.lfwcsb.storage.MatchScoreBoardStorage;
@@ -21,6 +22,10 @@ public class LifeFootballWorldCupScoreBoard {
   public void startMatch(String homeTeam, String awayTeam) {
     if (Objects.equals(homeTeam, awayTeam)) {
       throw new TeamNameException("One team cannot play with itself on World Cup");
+    }
+    Match match = this.matchScoreBoardStorage.getMatch(homeTeam, awayTeam);
+    if (match != null) {
+      throw new TeamCantPlayTwoMatchesAtTheSameTimeException("Team can't play two matches at the same time");
     }
     Match newMatch = new Match(homeTeam, awayTeam, 0, 0);
     this.matchScoreBoardStorage.upsertMatch(newMatch);
