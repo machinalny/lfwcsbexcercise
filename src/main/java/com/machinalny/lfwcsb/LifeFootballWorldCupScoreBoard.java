@@ -8,6 +8,7 @@ import com.machinalny.lfwcsb.exceptions.TeamNameException;
 import com.machinalny.lfwcsb.model.Match;
 import com.machinalny.lfwcsb.storage.MatchScoreBoardStorage;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -16,6 +17,8 @@ import org.apache.commons.lang3.StringUtils;
 public class LifeFootballWorldCupScoreBoard {
 
   private MatchScoreBoardStorage matchScoreBoardStorage;
+  private final Comparator<Match> matchScoreBoardComparator =
+      Comparator.comparingLong(Match::getTotalScore).reversed();
 
   public LifeFootballWorldCupScoreBoard(MatchScoreBoardStorage matchScoreBoardStorage) {
     this.matchScoreBoardStorage = matchScoreBoardStorage;
@@ -64,11 +67,14 @@ public class LifeFootballWorldCupScoreBoard {
   }
 
   public String getSummaryOfMatchesInProgress() {
-    List<Match> activeMatches = this.matchScoreBoardStorage.getActiveMatches();
+    List<Match> activeMatches =
+        this.matchScoreBoardStorage.getActiveMatches().stream()
+            .sorted(matchScoreBoardComparator)
+            .toList();
     StringBuilder stringBuilder = new StringBuilder();
     for (int i = 0; i < activeMatches.size(); i++) {
       Match match = activeMatches.get(i);
-      stringBuilder.append(String.format("%d.%s", i + 1, match.toString()));
+      stringBuilder.append(String.format("%d.%s\n", i + 1, match.toString()));
     }
     return stringBuilder.toString();
   }

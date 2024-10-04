@@ -140,4 +140,23 @@ class LifeFootballWorldCupScoreBoardTest {
   void cantFinishNotStartedMatch() {
     assertThrows(NotStartedMatchException.class, () -> scoreBoard.finishMatch("Uruguay", "Panama"));
   }
+
+  @Test
+  void summaryShouldBeOrderedByTotalScoreOfMatches() {
+    scoreBoard.startMatch("Uruguay", "Panama");
+    scoreBoard.startMatch("Brazil", "Germany");
+    scoreBoard.startMatch("Poland", "Netherlands");
+
+    scoreBoard.updateScore("Uruguay", "Panama", 2, 0);
+    scoreBoard.updateScore("Brazil", "Germany", 0, 8);
+    scoreBoard.updateScore("Poland", "Netherlands", 1, 3);
+
+    var expectedSummary =
+        """
+                1.Brazil 0 - Germany 8
+                2.Poland 1 - Netherlands 3
+                3.Uruguay 2 - Panama 0
+                """;
+    assertEquals(expectedSummary.strip(), scoreBoard.getSummaryOfMatchesInProgress().strip());
+  }
 }

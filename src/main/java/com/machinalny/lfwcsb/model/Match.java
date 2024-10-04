@@ -7,4 +7,8 @@ public record Match(String homeTeam, String awayTeam, int homeScore, int awaySco
   public String toString() {
     return String.format("%s %d - %s %d", homeTeam, homeScore, awayTeam, awayScore);
   }
+
+  public int getTotalScore() {
+    return homeScore + awayScore;
+  }
 }
