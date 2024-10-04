@@ -23,9 +23,13 @@ public class LifeFootballWorldCupScoreBoard {
     if (Objects.equals(homeTeam, awayTeam)) {
       throw new TeamNameException("One team cannot play with itself on World Cup");
     }
-    Match match = this.matchScoreBoardStorage.getMatch(homeTeam, awayTeam);
-    if (match != null) {
-      throw new TeamCantPlayTwoMatchesAtTheSameTimeException("Team can't play two matches at the same time");
+    Match homeTeamMatch = this.matchScoreBoardStorage.getMatchByTeam(homeTeam);
+    Match awayTeamMath = this.matchScoreBoardStorage.getMatchByTeam(awayTeam);
+    if (homeTeamMatch != null || awayTeamMath != null) {
+      throw new TeamCantPlayTwoMatchesAtTheSameTimeException(
+          String.format(
+              "Team %s can't play two matches at the same time",
+              homeTeamMatch != null ? homeTeamMatch : awayTeamMath));
     }
     Match newMatch = new Match(homeTeam, awayTeam, 0, 0);
     this.matchScoreBoardStorage.upsertMatch(newMatch);

@@ -27,6 +27,15 @@ class LifeFootballWorldCupScoreBoardTest {
         Arguments.of(Integer.MAX_VALUE, Integer.MIN_VALUE));
   }
 
+  private static Stream<Arguments> provideTeamNamesIdentifiedAsTheSameTeam() {
+    return Stream.of(
+        Arguments.of("Urugway", "uruguay"),
+        Arguments.of("United States Of America", "United-States of America"),
+        Arguments.of("United States Of America", "United-States-of-America"),
+        Arguments.of("United States Of America", " united States-of-america"),
+        Arguments.of("United States Of America", "United States-of-america "));
+  }
+
   @BeforeEach
   void setUp() {
     scoreBoard = new LifeFootballWorldCupScoreBoard(new MatchScoreBoardInMemoryStorage());
@@ -85,8 +94,25 @@ class LifeFootballWorldCupScoreBoardTest {
   }
 
   @Test
-  void teamShouldOnlyBeAllowedToPlayOneMatchAtATime(){
+  void teamShouldOnlyBeAllowedToPlayOneMatchAtATime() {
     scoreBoard.startMatch("Uruguay", "Panama");
-    assertThrows(TeamCantPlayTwoMatchesAtTheSameTimeException.class, () -> scoreBoard.startMatch("Uruguay", "Panama"));
+    assertThrows(
+        TeamCantPlayTwoMatchesAtTheSameTimeException.class,
+        () -> scoreBoard.startMatch("Uruguay", "Panama"));
+    assertThrows(
+        TeamCantPlayTwoMatchesAtTheSameTimeException.class,
+        () -> scoreBoard.startMatch("Brazil", "Panama"));
+    assertThrows(
+        TeamCantPlayTwoMatchesAtTheSameTimeException.class,
+        () -> scoreBoard.startMatch("Uruguay", "Brazil"));
+  }
+
+  @ParameterizedTest
+  @MethodSource("provideTeamNamesIdentifiedAsTheSameTeam")
+  void validTeamNamesShouldIdentifyAsExistingTeam(String originalName, String alternativeName) {
+    scoreBoard.startMatch(originalName, "Panama");
+    assertThrows(
+        TeamCantPlayTwoMatchesAtTheSameTimeException.class,
+        () -> scoreBoard.startMatch(alternativeName, "Panama"));
   }
 }

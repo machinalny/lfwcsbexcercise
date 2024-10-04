@@ -35,6 +35,14 @@ public class MatchScoreBoardInMemoryStorage implements MatchScoreBoardStorage {
   }
 
   @Override
+  public Match getMatchByTeam(String teamName) {
+    return this.activeMatches.values().stream()
+        .filter(match -> match.homeTeam().equals(teamName) || match.awayTeam().equals(teamName))
+        .findFirst()
+        .orElse(null);
+  }
+
+  @Override
   public List<Match> getActiveMatches() {
     return activeMatches.values().stream().toList();
   }
