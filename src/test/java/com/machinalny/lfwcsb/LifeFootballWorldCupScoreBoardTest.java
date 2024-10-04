@@ -29,7 +29,7 @@ class LifeFootballWorldCupScoreBoardTest {
 
   private static Stream<Arguments> provideTeamNamesIdentifiedAsTheSameTeam() {
     return Stream.of(
-        Arguments.of("Urugway", "uruguay"),
+        Arguments.of("Uruguay", "uruguay"),
         Arguments.of("United States Of America", "United-States of America"),
         Arguments.of("United States Of America", "United-States-of-America"),
         Arguments.of("United States Of America", " united States-of-america"),
@@ -113,6 +113,6 @@ class LifeFootballWorldCupScoreBoardTest {
     scoreBoard.startMatch(originalName, "Panama");
     assertThrows(
         TeamCantPlayTwoMatchesAtTheSameTimeException.class,
-        () -> scoreBoard.startMatch(alternativeName, "Panama"));
+        () -> scoreBoard.startMatch(alternativeName, "Brazil"));
   }
 }
