@@ -18,7 +18,10 @@ public class LifeFootballWorldCupScoreBoard {
 
   private MatchScoreBoardStorage matchScoreBoardStorage;
   private final Comparator<Match> matchScoreBoardComparator =
-      Comparator.comparingLong(Match::getTotalScore).reversed();
+      Comparator.comparingLong(Match::getTotalScore)
+          .reversed()
+          .thenComparing(Match::startOfMatch, Comparator.reverseOrder());
+  ;
 
   public LifeFootballWorldCupScoreBoard(MatchScoreBoardStorage matchScoreBoardStorage) {
     this.matchScoreBoardStorage = matchScoreBoardStorage;
@@ -62,7 +65,8 @@ public class LifeFootballWorldCupScoreBoard {
         || awayScore < 0) {
       throw new ScoreCantBeDeductedOrNegative("Score can't be deducted or negative");
     }
-    Match updatedMatch = new Match(sanitizedHomeTeam, sanitizedAwayTeam, homeScore, awayScore);
+    Match updatedMatch =
+        new Match(sanitizedHomeTeam, sanitizedAwayTeam, homeScore, awayScore, match.startOfMatch());
     this.matchScoreBoardStorage.upsertMatch(updatedMatch);
   }
 

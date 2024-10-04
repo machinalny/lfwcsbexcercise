@@ -8,12 +8,15 @@ import com.machinalny.lfwcsb.exceptions.ScoreCantBeDeductedOrNegative;
 import com.machinalny.lfwcsb.exceptions.TeamCantPlayTwoMatchesAtTheSameTimeException;
 import com.machinalny.lfwcsb.exceptions.TeamNameException;
 import com.machinalny.lfwcsb.storage.MatchScoreBoardInMemoryStorage;
+import java.time.LocalDateTime;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 class LifeFootballWorldCupScoreBoardTest {
 
@@ -122,9 +125,11 @@ class LifeFootballWorldCupScoreBoardTest {
     scoreBoard.startMatch(originalName, "Panama");
     scoreBoard.updateScore(alternativeName, "Panama", 2, 0);
     var expectedSummary =
-        String.format("""
-                1.%s 2 - Panama 0
-                """, originalName);
+        String.format(
+            """
+                        1.%s 2 - Panama 0
+                        """,
+            originalName);
     assertEquals(expectedSummary.strip(), scoreBoard.getSummaryOfMatchesInProgress().strip());
   }
 
@@ -153,10 +158,51 @@ class LifeFootballWorldCupScoreBoardTest {
 
     var expectedSummary =
         """
-                1.Brazil 0 - Germany 8
-                2.Poland 1 - Netherlands 3
-                3.Uruguay 2 - Panama 0
-                """;
+                        1.Brazil 0 - Germany 8
+                        2.Poland 1 - Netherlands 3
+                        3.Uruguay 2 - Panama 0
+                        """;
     assertEquals(expectedSummary.strip(), scoreBoard.getSummaryOfMatchesInProgress().strip());
+  }
+
+  @Test
+  void summaryShouldBeOrderedByTotalScoreOfMatchesAndByMatchTimeStart() {
+    var stubbedLocalDateTime1stMatch = LocalDateTime.of(2020, 01, 01, 22, 22, 22);
+    var stubbedLocalDateTime2ndMatch = LocalDateTime.of(2020, 01, 01, 22, 22, 23);
+    var stubbedLocalDateTime3rdMatch = LocalDateTime.of(2020, 01, 01, 22, 22, 24);
+    var stubbedLocalDateTime4thMatch = LocalDateTime.of(2020, 01, 01, 22, 22, 25);
+    var stubbedLocalDateTime5thMatch = LocalDateTime.of(2020, 01, 01, 22, 22, 26);
+
+    try (MockedStatic<LocalDateTime> mockedStatic = Mockito.mockStatic(LocalDateTime.class)) {
+      mockedStatic
+          .when(LocalDateTime::now)
+          .thenReturn(
+              stubbedLocalDateTime1stMatch,
+              stubbedLocalDateTime2ndMatch,
+              stubbedLocalDateTime3rdMatch,
+              stubbedLocalDateTime4thMatch,
+              stubbedLocalDateTime5thMatch);
+      scoreBoard.startMatch("Mexico", "Canada");
+      scoreBoard.startMatch("Spain", "Brazil");
+      scoreBoard.startMatch("Germany", "France");
+      scoreBoard.startMatch("Uruguay", "Italy");
+      scoreBoard.startMatch("Argentina", "Australia");
+
+      scoreBoard.updateScore("Mexico", "Canada", 0, 5);
+      scoreBoard.updateScore("Spain", "Brazil", 10, 2);
+      scoreBoard.updateScore("Germany", "France", 2, 2);
+      scoreBoard.updateScore("Uruguay", "Italy", 6, 6);
+      scoreBoard.updateScore("Argentina", "Australia", 3, 1);
+
+      var expectedSummary =
+          """
+                            1.Uruguay 6 - Italy 6
+                            2.Spain 10 - Brazil 2
+                            3.Mexico 0 - Canada 5
+                            4.Argentina 3 - Australia 1
+                            5.Germany 2 - France 2
+                            """;
+      assertEquals(expectedSummary.strip(), scoreBoard.getSummaryOfMatchesInProgress().strip());
+    }
   }
 }
