@@ -14,18 +14,24 @@ public class MatchScoreBoardInMemoryStorage implements MatchScoreBoardStorage {
     this.activeMatches = new HashMap<>();
   }
 
-  private Integer calculateHashOfHomeAndAwayTeamNames(Match match) {
-    String homeAndAwayTeamNames = match.homeTeam() + match.awayTeam();
+  private Integer calculateHashOfHomeAndAwayTeamNames(String homeTeamName, String awayTeamName) {
+    String homeAndAwayTeamNames = homeTeamName + awayTeamName;
     return homeAndAwayTeamNames.hashCode();
   }
 
-  @Override
-  public void addMatch(Match match) {
-    if (activeMatches == null) {
-      initialize();
-    }
+  private Integer calculateHashOfMatch(Match match) {
+    return calculateHashOfHomeAndAwayTeamNames(match.homeTeam(), match.awayTeam());
+  }
 
-    activeMatches.put(calculateHashOfHomeAndAwayTeamNames(match), match);
+  @Override
+  public void upsertMatch(Match match) {
+    activeMatches.put(calculateHashOfMatch(match), match);
+  }
+
+  @Override
+  public Match getMatch(String homeTeam, String awayTeam) {
+    Integer hashOfMatch = calculateHashOfHomeAndAwayTeamNames(homeTeam, awayTeam);
+    return activeMatches.getOrDefault(hashOfMatch, null);
   }
 
   @Override

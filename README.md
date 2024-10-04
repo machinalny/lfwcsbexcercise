@@ -36,7 +36,7 @@ scoreboard.
 - Libary should have an interface exposed with:
 - startMatch(homeTeam, awayTeam)
 - startMatch(homeTeam, awayTeam, initialScore) -> lib could be notified with delay
-- updateScore(homeTeamScore, awayTeamScore)
+- updateScore(homeTeam, awayTeam, homeTeamScore, awayTeamScore)
 - finishMatch(homeTeam, awayTeam)
 - getSummaryOfMatchesInProgress()
 
