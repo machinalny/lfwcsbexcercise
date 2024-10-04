@@ -135,4 +135,9 @@ class LifeFootballWorldCupScoreBoardTest {
     scoreBoard.finishMatch("Uruguay", "Panama");
     assertNotEquals(scoreBoardBeforeFinishing, scoreBoard.getSummaryOfMatchesInProgress().strip());
   }
+
+  @Test
+  void cantFinishNotStartedMatch() {
+    assertThrows(NotStartedMatchException.class, () -> scoreBoard.finishMatch("Uruguay", "Panama"));
+  }
 }

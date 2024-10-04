@@ -76,6 +76,10 @@ public class LifeFootballWorldCupScoreBoard {
   public void finishMatch(String homeTeam, String awayTeam) {
     String sanitizedHomeTeam = sanitizeTeamName(homeTeam);
     String sanitizedAwayTeam = sanitizeTeamName(awayTeam);
+    Match match = this.matchScoreBoardStorage.getMatch(sanitizedHomeTeam, sanitizedAwayTeam);
+    if (match == null) {
+      throw new NotStartedMatchException("Can't update score of not started match");
+    }
     this.matchScoreBoardStorage.removeMatch(new Match(sanitizedHomeTeam, sanitizedAwayTeam, 0, 0));
   }
 }
